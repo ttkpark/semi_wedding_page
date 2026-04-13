@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>우리 약혼했어요 💍</title>
+
+  <!-- ===================================================
+       KakaoTalk / SNS 공유 설정
+       ⚠️  og:image, og:url 은 배포 후 실제 절대 URL로 바꿔주세요.
+           로컬 파일 경로로는 카카오톡 미리보기가 동작하지 않습니다.
+       =================================================== -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="우리 약혼했어요">
+  <meta property="og:title" content="우리 약혼했어요 💍">
+  <meta property="og:description" content="두 사람이 약혼했습니다 ✨  소식을 전합니다.">
+  <meta property="og:image" content="src/KakaoTalk_20260411_190926437_04.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url" content="">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+KR:wght@200;300;400&display=swap"
+    rel="stylesheet">
+
+  <style>
+    :root {
+      --cream: #FDFAF4;
+      --warm-white: #FFFEF9;
+      --gold: #A87848;
+      --gold-mid: #C49A64;
+      --gold-bright: #D4AF6E;
+      --brown: #3B2618;
+      --brown-mid: #6A4A33;
+      --brown-soft: #9C7A60;
+      --blush: #F3E6DA;
+      --blush-deep: #E8D0C0;
+      --border: rgba(168, 120, 72, 0.22);
+    }
+
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Noto Serif KR', 'Georgia', serif;
+      background: var(--cream);
+      color: var(--brown);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── 상단/하단 금선 ── */
+    .accent-bar {
+      height: 3px;
+      background: linear-gradient(90deg,
+          transparent 0%,
+          var(--gold-mid) 15%,
+          var(--gold-bright) 50%,
+          var(--gold-mid) 85%,
+          transparent 100%);
+    }
+
+    /* ── 히어로 ── */
+    .hero {
+      background: var(--warm-white);
+      padding: 80px 24px 72px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      font-size: 0.6rem;
+      letter-spacing: 0.55em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid var(--border);
+      padding: 7px 22px;
+      margin-bottom: 44px;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.1s both;
+    }
+
+    .hero-names {
+      font-family: 'Cormorant Garamond', 'Georgia', serif;
+      font-size: clamp(3.2rem, 9vw, 6.5rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--brown);
+      line-height: 1;
+      letter-spacing: 0.01em;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.25s both;
+    }
+
+    /* ─ "♡" 사이 ─ */
+    .name-sep {
+      display: block;
+      font-family: 'Noto Serif KR', serif;
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      font-style: normal;
+      font-weight: 200;
+      letter-spacing: 0.45em;
+      color: var(--gold-mid);
+      margin: 12px 0;
+    }
+
+    /* ─ 장식 룰 ─ */
+    .ornament {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin: 32px auto 28px;
+      max-width: 320px;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.45s both;
+    }
+
+    .ornament::before,
+    .ornament::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold-mid));
+    }
+
+    .ornament::after {
+      background: linear-gradient(to left, transparent, var(--gold-mid));
+    }
+
+    .orn-icon {
+      color: var(--gold-mid);
+      font-size: 1.05rem;
+    }
+
+    .hero-title {
+      font-size: clamp(1.1rem, 3vw, 1.7rem);
+      font-weight: 200;
+      letter-spacing: 0.42em;
+      color: var(--brown-mid);
+      margin-bottom: 14px;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.55s both;
+    }
+
+    .hero-date {
+      font-size: 0.78rem;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+      font-weight: 300;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.65s both;
+    }
+
+    /* ── 메시지 ── */
+    .message-section {
+      padding: 72px 24px;
+      background: var(--cream);
+      text-align: center;
+    }
+
+    .message-inner {
+      max-width: 580px;
+      margin: 0 auto;
+    }
+
+    .message-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.15rem, 2.8vw, 1.65rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--gold-bright);
+      margin-bottom: 32px;
+      line-height: 1.7;
+    }
+
+    .message-text {
+      font-size: 0.92rem;
+      font-weight: 300;
+      line-height: 2.6;
+      color: var(--brown-mid);
+      word-break: keep-all;
+    }
+
+    /* ── 구분선 ── */
+    .h-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 24px;
+    }
+
+    .h-divider::before,
+    .h-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+      max-width: 180px;
+    }
+
+    .h-divider-icon {
+      margin: 0 18px;
+      color: var(--gold-mid);
+      font-size: 0.85rem;
+      letter-spacing: 0.4em;
+    }
+
+    /* ── 갤러리 ── */
+    .gallery-section {
+      padding: 68px 24px 80px;
+      background: var(--blush);
+    }
+
+    .gallery-label {
+      text-align: center;
+      font-size: 0.6rem;
+      letter-spacing: 0.6em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 36px;
+      font-weight: 300;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      max-width: 920px;
+      margin: 0 auto;
+    }
+
+    .photo {
+      overflow: hidden;
+      background: var(--blush-deep);
+      position: relative;
+    }
+
+    .photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .photo:hover img {
+      transform: scale(1.04);
+    }
+
+    /* 이미지 없을 때 플레이스홀더 */
+    .photo::after {
+      content: attr(data-ph);
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      letter-spacing: 0.35em;
+      color: var(--brown-soft);
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .photo-1 {
+      aspect-ratio: 3/4;
+    }
+
+    .photo-2 {
+      aspect-ratio: 3/4;
+    }
+
+    .photo-3 {
+      grid-column: 1 / -1;
+      aspect-ratio: 16/7;
+    }
+
+    .photo-4 {
+      grid-column: 1 / -1;
+      aspect-ratio: 16/7;
+    }
+
+    @media (max-width: 560px) {
+      .gallery-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .photo-1,
+      .photo-2 {
+        aspect-ratio: 4/3;
+      }
+
+      .photo-3,
+      .photo-4 {
+        grid-column: 1;
+        aspect-ratio: 4/3;
+      }
+    }
+
+    /* ── 클로징 ── */
+    .closing-section {
+      padding: 80px 24px 72px;
+      background: var(--warm-white);
+      text-align: center;
+    }
+
+    .closing-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.2rem, 3vw, 1.9rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--brown-mid);
+      line-height: 2;
+      max-width: 480px;
+      margin: 0 auto 28px;
+    }
+
+    .closing-names {
+      font-size: 0.8rem;
+      letter-spacing: 0.4em;
+      color: var(--gold);
+      font-weight: 200;
+    }
+
+    /* ── 애니메이션 ── */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Intersection observer 용 */
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="accent-bar"></div>
+
+  <!-- ─── 히어로 ─── -->
+  <section class="hero">
+    <div class="hero-badge">Engagement Announcement</div>
+
+    <div class="hero-names">
+      <!-- ✏️ 이름을 여기에 넣어주세요 -->
+      박기호
+      <span class="name-sep">♡</span>
+      오은애
+    </div>
+
+    <div class="ornament">
+      <span class="orn-icon">💍</span>
+    </div>
+
+    <h1 class="hero-title">우 &thinsp; 리 &thinsp; &nbsp; 약 &thinsp; 혼 &thinsp; 했 &thinsp; 어 &thinsp; 요</h1>
+
+    <!-- ✏️ 날짜를 넣어주세요 -->
+    <p class="hero-date">2026년 &nbsp; 4월 &nbsp; 11일</p>
+  </section>
+
+  <!-- ─── 메시지 ─── -->
+  <section class="message-section">
+    <div class="message-inner reveal">
+      <p class="message-quote">"함께여서 더 빛나는 날들을 시작합니다"</p>
+      <!-- ✏️ 메시지를 자유롭게 수정해주세요 -->
+      <p class="message-text">
+        저희 두 사람이 약혼하게 되었습니다.<br><br>
+        그동안 늘 응원해주시고 곁에서<br>
+        지켜봐 주셔서 진심으로 감사드립니다.<br><br>
+        앞으로도 따뜻하게 지켜봐 주세요. 🤍
+      </p>
+    </div>
+  </section>
+
+  <div class="h-divider reveal">
+    <span class="h-divider-icon">✦ &thinsp; ✦ &thinsp; ✦</span>
+  </div>
+
+  <!-- ─── 갤러리 ─── -->
+  <section class="gallery-section">
+    <p class="gallery-label reveal">Our Moments</p>
+    <div class="gallery-grid">
+      <div class="photo photo-1" data-ph="PHOTO">
+        <img src="src/KakaoTalk_20260411_190926437_04.jpg" alt="사진 1" loading="lazy">
+      </div>
+      <div class="photo photo-2" data-ph="PHOTO">
+        <img src="src/KakaoTalk_20260411_190926437_07.jpg" alt="사진 2" loading="lazy">
+      </div>
+      <div class="photo photo-3" data-ph="PHOTO">
+        <img src="src/KakaoTalk_20260411_190926437_10.jpg" alt="사진 3" loading="lazy">
+      </div>
+      <div class="photo photo-4" data-ph="PHOTO">
+        <img src="src/KakaoTalk_20260411_190926437_21.jpg" alt="사진 4" loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── 클로징 ─── -->
+  <section class="closing-section">
+    <p class="closing-quote reveal">
+      "설레는 시작을<br>함께 응원해 주셔서<br>감사합니다"
+    </p>
+    <!-- ✏️ 이름 수정 -->
+    <p class="closing-names reveal">박기호 &nbsp;·&nbsp; 오은애 &nbsp;드림</p>
+  </section>
+
+  <div class="accent-bar"></div>
+
+  <script>
+    // 스크롤 페이드인
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // 폴백: 페이지 로드 후 1.2초 뒤 미노출 요소 일괄 표시
+    setTimeout(() => {
+      document.querySelectorAll('.reveal:not(.visible)').forEach(el => el.classList.add('visible'));
+    }, 1200);
+  </script>
+
+</body>
+
+</html>

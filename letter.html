@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>비밀 편지 💌</title>
+
+  <!-- ===================================================
+       KakaoTalk / SNS 공유 설정
+       ⚠️  배포 후 og:url 을 실제 절대 URL로 바꿔주세요.
+           og:image 도 https://... 로 바꿔야 카카오 미리보기가 동작합니다.
+       =================================================== -->
+  <meta property="og:type"         content="website">
+  <meta property="og:site_name"    content="비밀 편지">
+  <meta property="og:title"        content="비밀 편지가 도착했어요 💌">
+  <meta property="og:description"  content="클릭해서 열어보세요...">
+  <meta property="og:image"        content="src/KakaoTalk_20260411_190926437_04.jpg">
+  <meta property="og:image:width"  content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url"          content="">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Noto+Serif+KR:wght@200;300;400&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #0C0806;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Noto Serif KR', serif;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── 배경 광원 ── */
+    .bg-glow {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse at 25% 35%, rgba(185,140,75,0.10) 0%, transparent 55%),
+        radial-gradient(ellipse at 75% 65%, rgba(160,105,55,0.08) 0%, transparent 55%);
+    }
+
+    /* ── 별 레이어 ── */
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        radial-gradient(circle, rgba(230,195,140,0.65) 1px, transparent 1px),
+        radial-gradient(circle, rgba(230,195,140,0.40) 1px, transparent 1px),
+        radial-gradient(circle, rgba(230,195,140,0.25) 1px, transparent 1px);
+      background-size: 130px 130px, 210px 210px, 320px 320px;
+      background-position: 18px 28px, 75px 92px, 44px 64px;
+      animation: twinkle 5s ease-in-out infinite alternate;
+    }
+
+    @keyframes twinkle {
+      from { opacity: 0.45; }
+      to   { opacity: 1; }
+    }
+
+    /* ── 상단 안내 ── */
+    .from-label {
+      position: relative;
+      z-index: 10;
+      font-size: 0.6rem;
+      letter-spacing: 0.65em;
+      text-transform: uppercase;
+      color: rgba(205, 168, 108, 0.45);
+      margin-bottom: 44px;
+      opacity: 0;
+      animation: fadeIn 1.4s ease 0.6s both;
+    }
+
+    /* ── 씬 ── */
+    .scene {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 34px;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      opacity: 0;
+      animation: fadeIn 1.2s ease 0.9s both;
+    }
+
+    /* ── 그림자 래퍼 (filter를 여기에, 3D context 분리) ── */
+    .env-shadow {
+      filter: drop-shadow(0 20px 48px rgba(185, 138, 65, 0.20));
+      transition: filter 0.45s ease;
+    }
+
+    .scene:hover .env-shadow {
+      filter: drop-shadow(0 30px 60px rgba(185, 138, 65, 0.38));
+    }
+
+    /* ── 봉투 래퍼 (3D perspective 컨텍스트) ── */
+    .env-wrap {
+      position: relative;
+      width: min(360px, 88vw);
+      height: calc(min(360px, 88vw) * 0.694);  /* ~250px */
+      transition: transform 0.4s ease;
+      perspective: 900px;
+    }
+
+    .scene:hover .env-wrap { transform: translateY(-6px); }
+
+    /* ── 봉투 몸통 ── */
+    .env-body {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(148deg, #F4E9D4 0%, #EAD8B8 100%);
+      border-radius: 3px;
+    }
+
+    /* ── 봉투 내부 색 (플랩 열리면 보임) ── */
+    .env-inside {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 52%;
+      background: linear-gradient(to bottom, #FAF5E8, #EFE4CC);
+      border-radius: 3px 3px 0 0;
+      z-index: 1;
+    }
+
+    /* ── 하단 사이드 fold ── */
+    .env-bl {
+      position: absolute;
+      bottom: 0; left: 0; right: 50%;
+      height: 52%;
+      background: #E2D4B4;
+      clip-path: polygon(0 100%, 0 0, 100% 100%);
+      z-index: 2;
+    }
+
+    .env-br {
+      position: absolute;
+      bottom: 0; right: 0; left: 50%;
+      height: 52%;
+      background: #D7C9A8;
+      clip-path: polygon(100% 100%, 100% 0, 0 100%);
+      z-index: 2;
+    }
+
+    /* ── 편지 내용 (안에서 슬라이드 업) ── */
+    .letter-inner {
+      position: absolute;
+      left: 8%;
+      width: 84%;
+      bottom: 12px;
+      height: 80%;
+      background: linear-gradient(155deg, #FFFEFC 0%, #FBF6EC 100%);
+      border-radius: 2px;
+      box-shadow: 0 -5px 20px rgba(0,0,0,0.13);
+      z-index: 8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 18px 20px;
+      gap: 12px;
+      /* 처음에 봉투 바닥에 숨어 있음 */
+      transform: translateY(10px);
+      transition: transform 0.95s cubic-bezier(0.33, 1, 0.68, 1) 0.4s;
+    }
+
+    .env-wrap.open .letter-inner {
+      transform: translateY(-148%);
+    }
+
+    .letter-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(0.9rem, 2.4vw, 1.1rem);
+      font-style: italic;
+      font-weight: 300;
+      color: #5A3E26;
+      line-height: 1.9;
+      opacity: 0;
+      transition: opacity 0.55s ease 1.05s;
+    }
+
+    .env-wrap.open .letter-text { opacity: 1; }
+
+    .letter-sub {
+      display: block;
+      font-family: 'Noto Serif KR', serif;
+      font-size: 0.72em;
+      font-style: normal;
+      color: #9B7A5E;
+      margin-top: 4px;
+      letter-spacing: 0.05em;
+    }
+
+    .open-btn {
+      display: inline-block;
+      margin-top: 4px;
+      padding: 7px 24px;
+      border: 1px solid rgba(135, 95, 52, 0.42);
+      color: #7A5032;
+      font-family: 'Noto Serif KR', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.38em;
+      text-decoration: none;
+      text-transform: uppercase;
+      opacity: 0;
+      pointer-events: none;
+      transition:
+        opacity   0.55s ease 1.3s,
+        background 0.22s ease,
+        color      0.22s ease;
+    }
+
+    .env-wrap.open .open-btn {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .open-btn:hover {
+      background: #7A5032;
+      color: #FBF6EC;
+    }
+
+    /* ── 상단 플랩 (3D 회전) ── */
+    .env-flap {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 52%;
+      background: #EBD9BF;
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      transform-origin: top center;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transition: transform 0.78s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 15;
+    }
+
+    /* 플랩 위의 미세한 그림자선 */
+    .env-flap::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 10%;
+      width: 80%;
+      height: 1px;
+      background: rgba(0,0,0,0.06);
+    }
+
+    .env-wrap.open .env-flap {
+      transform: rotateX(180deg);
+    }
+
+    /* ── 밀랍 인장 ── */
+    .wax-seal {
+      position: absolute;
+      top: calc(52% - 30px);
+      left: 50%;
+      transform: translateX(-50%);
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 36% 33%, #992222 0%, #5E0F0F 100%);
+      box-shadow:
+        0 4px 14px rgba(0,0,0,0.55),
+        inset 0 1px 3px rgba(255,210,190,0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      color: rgba(255, 205, 190, 0.92);
+      z-index: 20;
+      transition: opacity 0.35s ease 0.1s, transform 0.35s ease 0.1s;
+    }
+
+    .env-wrap.open .wax-seal {
+      opacity: 0;
+      transform: translateX(-50%) scale(0.75);
+    }
+
+    /* ── 힌트 ── */
+    .hint {
+      font-size: 0.68rem;
+      letter-spacing: 0.38em;
+      color: rgba(205, 170, 110, 0.52);
+      text-align: center;
+      animation: pulse 2.6s ease-in-out infinite;
+      transition: opacity 0.5s ease;
+    }
+
+    .scene.opened .hint {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.52; }
+      50%       { opacity: 1; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+<div class="stars"></div>
+
+<p class="from-label">A letter has arrived for you</p>
+
+<div class="scene" id="scene" onclick="openEnvelope()">
+
+  <!-- 그림자 래퍼 → 3D 컨텍스트 분리 -->
+  <div class="env-shadow">
+    <div class="env-wrap" id="envWrap">
+
+      <!-- 봉투 몸통 -->
+      <div class="env-body"></div>
+      <div class="env-inside"></div>
+      <div class="env-bl"></div>
+      <div class="env-br"></div>
+
+      <!-- 편지 (봉투 안에서 올라옴) -->
+      <div class="letter-inner">
+        <p class="letter-text">
+          우리 약혼했어요 &nbsp;💍
+          <span class="letter-sub">소식을 전합니다</span>
+        </p>
+        <a href="index.html" class="open-btn" onclick="event.stopPropagation()">
+          열어보기
+        </a>
+      </div>
+
+      <!-- 상단 플랩 -->
+      <div class="env-flap"></div>
+
+      <!-- 밀랍 인장 -->
+      <div class="wax-seal">♡</div>
+
+    </div>
+  </div>
+
+  <p class="hint" id="hint">클릭해서 열어보세요</p>
+
+</div>
+
+<script>
+  let opened = false;
+
+  function openEnvelope() {
+    if (opened) return;
+    opened = true;
+    document.getElementById('envWrap').classList.add('open');
+    document.getElementById('scene').classList.add('opened');
+  }
+</script>
+
+</body>
+</html>
