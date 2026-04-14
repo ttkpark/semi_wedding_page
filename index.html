@@ -294,7 +294,11 @@
 
     .photo-5 {
       grid-column: 1 / -1;
-      aspect-ratio: 16/7;
+    }
+
+    .photo-5 img {
+      height: auto;
+      object-fit: initial;
     }
 
     @media (max-width: 560px) {
@@ -309,10 +313,13 @@
       }
 
       .photo-3,
-      .photo-4,
-      .photo-5 {
+      .photo-4 {
         grid-column: 1;
         aspect-ratio: 4/3;
+      }
+
+      .photo-5 {
+        grid-column: 1;
       }
     }
 
